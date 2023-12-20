@@ -9,9 +9,9 @@ function AssignorChangeMentor() {
 
   const handleSubmit = async (e) => {
     e.preventDefault();
-    const updated_mentor = await axios.patch(`http://localhost:4100/Students/assign-mentor/${student}`, { mentor });
+    const updated_mentor = await axios.patch(`https://mentor-and-student-be.onrender.com/Students/assign-mentor/${student}`, { mentor });
     console.log(updated_mentor);
-    const stud_data = await axios.get(`http://localhost:4100/Students`);
+    const stud_data = await axios.get(`https://mentor-and-student-be.onrender.com/Students`);
     setStudents(stud_data.data);
     setStudent('');
     setMentor('');
@@ -68,5 +68,5 @@ function AssignorChangeMentor() {
     </div>
   );
 }
-
+//vFyL3UmPueNfjZFF
 export default AssignorChangeMentor;

@@ -11,7 +11,7 @@ function ShowMentorStudents() {
     
     const handleSubmit = async (e) => {
         e.preventDefault();
-        const student_list = await axios.get(`http://localhost:4100/Students/mentor-students/${mentor}`);
+        const student_list = await axios.get(`https://mentor-and-student-be.onrender.com/Students/mentor-students/${mentor}`);
         console.log(student_list);
         setStudList(student_list.data);
         setMentor('')
