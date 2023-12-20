@@ -2,7 +2,7 @@ import React, { useContext } from 'react';
 import { AssignMentorsContext } from '../Context/AssignMentors';
 
 function StudentTable() {
-  const [mentors, setMentors, students, setStudents] = useContext(AssignMentorsContext);
+  const [mentors, , students] = useContext(AssignMentorsContext); // Removed setMentors from destructuring
 
   return (
     <div className="position-absolute top-0 end-0 p-3">

@@ -1,32 +1,35 @@
-import React,{useState,useEffect} from 'react'
-import axios from 'axios'
+// AssignMentors.js
+import React, { useState, useEffect, useCallback } from 'react';
+import axios from 'axios';
 
 export const AssignMentorsContext = React.createContext();
 
-export const AssignMentorProvider = ({children}) => {
-    const [students,setStudents] = useState([]);
-    const [mentors,setMentors] = useState([]);
-    const BaseURL = `https://zen-assign-mentors.herokuapp.com`;
-    const fetchData = async () => {
-        await axios.get(`http://localhost:4100/Mentors`)
-        .then(response => setMentors(response.data)).then(() => console.log(mentors));
+export const AssignMentorProvider = ({ children }) => {
+  const [students, setStudents] = useState([]);
+  const [mentors, setMentors] = useState([]);
+  const BaseURL = `https://mentor-and-student-be.onrender.com`;
 
-        await axios.get(`http://localhost:4100/Students`)
-        .then((response) => setStudents(response.data)).then(() => console.log(students))
+  // Define fetchData using useCallback
+  const fetchData = useCallback(async () => {
+    try {
+      const mentorsResponse = await axios.get(`${BaseURL}/Mentors`);
+      setMentors(mentorsResponse.data);
+
+      const studentsResponse = await axios.get(`${BaseURL}/Students`);
+      setStudents(studentsResponse.data);
+    } catch (error) {
+      console.error('Error fetching data:', error);
     }
-    useEffect(() => {
-        fetchData();
-        return () => {
-            <></>
-        }
-    },[])
-    return(
-        <>
-        {console.log(mentors,students)}
-        <AssignMentorsContext.Provider value = {[mentors,setMentors,students,setStudents]}>
-            {children}
-        </AssignMentorsContext.Provider></>
-    )
-}
+  }, [BaseURL]); // Include BaseURL in the dependency array
 
+  useEffect(() => {
+    fetchData();
+    // No need to return anything in the cleanup function
+  }, [fetchData]); // Include fetchData in the dependency array
 
+  return (
+    <AssignMentorsContext.Provider value={[mentors, setMentors, students, setStudents]}>
+      {children}
+    </AssignMentorsContext.Provider>
+  );
+};
