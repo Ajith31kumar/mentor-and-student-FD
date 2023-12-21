@@ -9,7 +9,7 @@ function AssignorChangeMentor() {
 
   const handleSubmit = async (e) => {
     e.preventDefault();
-    const updated_mentor = await axios.patch(`https://mentor-and-student-be.onrender.com/Students/assign-mentor/${student}`, { mentor });
+    const updated_mentor = await axios.patch(`https://mentor-and-student-be.onrender.com/Students/assign-mentor${student}`, { mentor });
     console.log(updated_mentor);
     const stud_data = await axios.get(`https://mentor-and-student-be.onrender.com/Students`);
     setStudents(stud_data.data);

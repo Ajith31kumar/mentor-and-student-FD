@@ -20,7 +20,7 @@ function AssignStudentsToMentor() {
 
     const studList = selectedStudents.map((stud) => stud.value);
 
-    await axios.patch(`https://mentor-and-student-be.onrender.com/Students/assign-mentor-students`, {
+    await axios.patch(`https://localhost:4100/Students/assign-mentor-students`, {
       mentor,
       studList,
     });

@@ -7,15 +7,22 @@ function MentorForm() {
   const [name, setname] = useState('');
   const [email, setemail] = useState('');
   const [course, setcourse] = useState('');
-
+  
   const handleSubmit = async (e) => {
     e.preventDefault();
-    const posted_mentor = await axios.post(`https://mentor-and-student-be.onrender.com/Mentors`, { name, email, course });
-    setMentors([...mentors, posted_mentor.data]);
-    setname('');
-    setemail('');
-    setcourse('');
+    try {
+      const posted_mentor = await axios.post(`https:localhost:4100/Mentors`, { name, email, course });
+      setMentors([...mentors, posted_mentor.data]);
+      setname('');
+      setemail('');
+      setcourse('');
+    } catch (error) {
+      // Handle the error (e.g., log it to the console)
+      console.error('Error posting mentor:', error);
+    }
   };
+  
+    
 
   return (
     <form onSubmit={handleSubmit}>
