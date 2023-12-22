@@ -1,17 +1,8 @@
 import React, { useContext } from 'react';
 import { AssignMentorsContext } from '../Context/AssignMentors';
-import { useFormik } from 'formik';
 
 function MentorTable() {
   const [mentors, setMentors] = useContext(AssignMentorsContext);
-
-  // No need for Formik for displaying data, but added for consistency
-  const formik = useFormik({
-    initialValues: {},
-    onSubmit: () => {
-      // Handle submission if needed
-    },
-  });
 
   return (
     <div className="position-absolute top-0 end-0 p-3">
