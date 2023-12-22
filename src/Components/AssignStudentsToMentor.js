@@ -1,68 +1,74 @@
-import React, { useState, useContext, useEffect } from 'react';
+import React, { useContext, useEffect } from 'react';
 import axios from 'axios';
 import MultiSelect from 'multiselect-react-dropdown';
 import { AssignMentorsContext } from '../Context/AssignMentors';
+import { useFormik } from 'formik';
 
 function AssignStudentsToMentor() {
   const [mentors, setMentors, students, setStudents] = useContext(AssignMentorsContext);
-  const [mentor, setMentor] = useState('');
-  const [selectedStudents, setSelectedStudents] = useState([]);
-
-  const [options, setOptions] = useState([]);
+  const [options, setOptions] = React.useState([]);
 
   useEffect(() => {
     const mappedOptions = students.map((student) => ({ name: student.name, value: student._id }));
     setOptions(mappedOptions);
   }, [students]);
 
-  const handleSubmit = async (e) => {
-    e.preventDefault();
+  const formik = useFormik({
+    initialValues: {
+      mentor: '',
+      selectedStudents: [],
+    },
+    onSubmit: async (values) => {
+      try {
+        const studList = values.selectedStudents.map((stud) => stud.value);
 
-    const studList = selectedStudents.map((stud) => stud.value);
+        await axios.patch(`https://localhost:4100/Students/assign-mentor-students`, {
+          mentor: values.mentor,
+          studList,
+        });
 
-    await axios.patch(`https://localhost:4100/Students/assign-mentor-students`, {
-      mentor,
-      studList,
-    });
+        const studData = await axios.get(`https://mentor-and-student-be.onrender.com/Students`);
+        setStudents(studData.data);
 
-    const studData = await axios.get(`https://mentor-and-student-be.onrender.com/Students`);
-    setStudents(studData.data);
-  };
+        formik.resetForm();
+      } catch (error) {
+        console.error('Error assigning students to mentor:', error);
+      }
+    },
+  });
 
   return (
     <div>
-      <form onSubmit={handleSubmit}>
+      <form onSubmit={formik.handleSubmit}>
         <h2 className="text-info">Assign Students to Mentor</h2>
         <div className="mb-3">
-          <label htmlFor="student" className="form-label">
-            Student<span style={{ color: "red" }}>*</span>
-          </label> <br/>
+          <label htmlFor="students" className="form-label">
+            Students<span style={{ color: 'red' }}>*</span>
+          </label>
+          <br />
           <div className="d-flex">
-            <select
-              className="form-control"
-              aria-label="Default select example"
-              // value={student}
-              // onChange={(e) => { setStudent(e.target.value) }}
-            >
-              <option value=""></option>
-              {students.map((student) => (
-                <option key={student._id} value={student._id}>
-                  {student.name}
-                </option>
-              ))}
-            </select>
+            <MultiSelect
+              options={options}
+              selectedValues={formik.values.selectedStudents}
+              onSelect={(selectedList) => formik.setFieldValue('selectedStudents', selectedList)}
+              onRemove={(selectedList) => formik.setFieldValue('selectedStudents', selectedList)}
+              displayValue="name"
+            />
           </div>
-        </div><br/>
+        </div>
+        <br />
         <div className="mb-3">
           <label htmlFor="mentor" className="form-label">
-            Mentor<span style={{ color: "red" }}>*</span>
+            Mentor<span style={{ color: 'red' }}>*</span>
           </label>
           <div className="d-flex">
             <select
               className="form-control"
               aria-label="Default select example"
-              value={mentor}
-              onChange={(e) => { setMentor(e.target.value) }}
+              value={formik.values.mentor}
+              onChange={formik.handleChange}
+              onBlur={formik.handleBlur}
+              name="mentor"
             >
               <option value=""></option>
               {mentors.map((mentor) => (
@@ -72,7 +78,8 @@ function AssignStudentsToMentor() {
               ))}
             </select>
           </div>
-        </div><br/>
+        </div>
+        <br />
         <button type="submit" className="btn btn-primary mb-3">
           Submit
         </button>
