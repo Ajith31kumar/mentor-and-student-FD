@@ -19,8 +19,9 @@ function AssignStudentsToMentor() {
     e.preventDefault();
 
     const studList = selectedStudents.map((stud) => stud.value);
+//https://mentor-and-student-be.onrender.com/Students/assign-mentor-students
 
-    await axios.patch(`https://mentor-and-student-be.onrender.com/Students/assign-mentor-students`, {
+    await axios.patch(`https://mentor-and-student-be.onrender.com/Mentors/assignmentor-students/`, {
       mentor,
       studList,
     });
@@ -41,8 +42,8 @@ function AssignStudentsToMentor() {
             <select
               className="form-control"
               aria-label="Default select example"
-              // value={student}
-              // onChange={(e) => { setStudent(e.target.value) }}
+              value={selectedStudents}
+              onChange={(e) => { setSelectedStudents([...selectedStudents,e.target.value]) }}
             >
               <option value=""></option>
               {students.map((student) => (
